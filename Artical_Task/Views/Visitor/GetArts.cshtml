@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Artical_Task.Models.Article>
+
+@{
+    ViewBag.Title = "GetArts";
+    Layout = "~/Views/Shared/_VisitorLayout.cshtml";
+}
+
+<h2>All Articles</h2>
+<div id="myBtnContainer" style="margin-bottom:20px;">
+    <label>Select Category To Filter : </label>
+    <button class="btn" onclick="filterSelection('all')"> Show all</button>
+    @foreach (var category in ViewBag.categories)
+    {
+        <button class="btn" onclick="filterSelection('@category.name')">@category.name</button>
+    }
+</div>
+
+<div class="container">
+    @foreach (var x in Model)
+    {
+        <div class="art" name="@x.cate_name" style="width:60%;margin-bottom:20px;padding-bottom:20px;">
+            <div class="create_art">@x.subject (@x.cate_name)</div>
+            <div class="art_text">
+                <p style="float:left;margin-left:20px;color:#e1e2e4;font-size:15px;font-weight:lighter;">@x.dateTime</p>
+                <br />
+                <p style="float:left;margin-left:20px;font-size:17px;">@x.text</p>
+            </div>
+            <br />
+            <div class="gallery" style="padding-bottom:20px;">
+                @for (int i = 0; i < x.pathes.Count; i++)
+                {
+                    <a href="~/Uploads/@x.pathes[i]">
+                        <img id="@x.pathes[i]" src="~/Uploads/@x.pathes[i]" style="width:200px;height:200px" />
+                    </a>
+                }
+
+            </div>
+            <hr />
+            <div class="commentdiv">
+                @using (Html.BeginForm("GetArts", "Visitor", FormMethod.Post, new { @id = "msform", enctype = "multipart/form-data" }))
+                {
+                    <input type="text" name="comment" required placeholder="Write a comment" style="width:100%;height:40px;padding-left:20px;border-radius:5px;" />
+                    <input type="hidden" value="@x.id" name="art_id" />
+                    <input type="submit" style="background-color:#9cb4d8;height:40px;padding:10px;border-radius:5px;width:200px;" />
+                    //<button id="save" style="background-color:#9cb4d8;height:40px;padding:10px;border-radius:5px;width:200px;">Comment</button>
+                }
+            </div>
+            <hr />
+            <a onclick="slide_down(@x.id)"><i class="fa fa-angle-double-down" style="font-size:30px;"></i></a>
+            <a onclick="slide_up(@x.id)"><i class="fa fa-angle-double-up" style="font-size:30px;"></i></a>
+            <div id="comm+@x.id" style="display:none;">
+                @foreach (var c in x.art_comments)
+                {
+                    <div style="background-color:#f2f3f5;border-radius:10px;padding-left:10px;text-align:left;margin:5px">
+                        <p style="color:#516da5;font-size:18px;font-weight:bold">@c.User.username</p>
+                        <p style="color:#e1e2e4;font-size:15px;font-weight:lighter;">@c.dateTime</p>
+                        <p style="color:black;font-size:16px;padding-bottom:10px;">@c.text</p>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+    }
+</div>
+
+<script src="~/Scripts/jquery-2.2.3.min.js"></script>
+<script>
+
+    function slide_down(id) {
+        var elem = document.getElementById("comm+" + id);
+        elem.style.display = 'block';
+    }
+
+    function slide_up(id) {
+        var elem = document.getElementById("comm+" + id);
+        elem.style.display = 'none';
+    }
+
+    function filterSelection(category) {
+        var elem = document.getElementsByName(category);
+        if (category == "all")
+        {
+            $(".art").show();
+        }
+        else
+        {
+            $(".art").hide();
+            var i;
+            for (i = 0; i < elem.length; i++) {
+                elem[i].style.display = 'block';
+            }
+        }
+        
+    }
+
+</script>

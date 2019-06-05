@@ -1,0 +1,85 @@
+﻿@model Artical_Task.Models.Article
+
+@{
+    ViewBag.Title = "AddArt";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<h1>Create New Article</h1>
+<hr />
+@using (Html.BeginForm("AddArticle", "Admin", FormMethod.Post, new { @id= "msform" , enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-horizontal">
+         
+        <div class="art">
+            <div class="create_art">Create Article</div>
+            <div class="art_text" style="margin-top:20px;">
+                <label>Subject : </label>
+                @Html.EditorFor(model => model.subject, new { placeholder = "Article Subject..." })
+                <br />
+                @Html.ValidationMessageFor(model => model.text, "", new { @class = "text-danger" })
+            </div>
+            <div class="art_text">
+                @Html.TextAreaFor(model => model.text, new { placeholder = "Type your article here..." })
+                <br />
+                @Html.ValidationMessageFor(model => model.text, "", new { @class = "text-danger"})
+            </div>
+
+            <table>
+                <tr>
+                    <td>
+                        @Html.DropDownListFor(model => model.category_id, new SelectList(Model.categories, "id", "name"), "--Select Category--")
+                        <br />
+                         @Html.ValidationMessageFor(model => model.category_id, "", new { @class = "text-danger" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.files, "", new { @type = "file", @multiple = "multiple" , @id = "gallery-photo-add" })
+                        <br />
+                        @Html.ValidationMessageFor(model => model.files, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+            </table>
+
+            <hr />
+            <b>Preview uploaded files </b>
+            <br />
+            <br />
+            <div class="gallery"></div>
+
+            <button type="submit" value="ADD" class="btn btn-default" id="save">ِPublish</button>
+        </div>
+    </div>
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script>
+    $(function () {
+        // Multiple images preview in browser
+        var imagesPreview = function (input, placeToInsertImagePreview) {
+
+            if (input.files) {
+                var filesAmount = input.files.length;
+
+                for (i = 0; i < filesAmount; i++) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (event) {
+                        $($.parseHTML('<img width="120px" height="120px">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+                    }
+
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+
+        };
+
+        $('#gallery-photo-add').on('change', function () {
+            imagesPreview(this, 'div.gallery');
+        });
+    });
+
+</script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
