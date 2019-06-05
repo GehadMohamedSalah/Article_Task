@@ -22,3 +22,4 @@ and also can filter articles by categories)}
 -Visitor includes 2 Views --> Register , GetArts
 9-make validation on model using DataAnnotations
 10-use javascript to Filter Articles
+11-run project then login as an admin by username "gehad Mohammed" and password "123456789"
